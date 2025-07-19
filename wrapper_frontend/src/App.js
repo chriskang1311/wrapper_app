@@ -5,8 +5,167 @@ import {
   PaperAirplaneIcon,
   SparklesIcon,
   UserIcon,
-  ChatBubbleLeftRightIcon
+  ChatBubbleLeftRightIcon,
+  Cog6ToothIcon,
+  EnvelopeIcon,
+  PhoneIcon,
+  MapPinIcon,
+  CalendarIcon
 } from '@heroicons/react/24/outline';
+
+// Profile Form Component
+function ProfileForm({ profile, onSave, onCancel }) {
+  const [formData, setFormData] = useState(profile);
+
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Avatar Section */}
+      <div className="flex items-center space-x-4">
+        <div className="w-20 h-20 bg-claude-600 rounded-full flex items-center justify-center">
+          {formData.avatar ? (
+            <img 
+              src={formData.avatar} 
+              alt={formData.name}
+              className="w-20 h-20 rounded-full object-cover"
+            />
+          ) : (
+            <UserIcon className="h-10 w-10 text-white" />
+          )}
+        </div>
+        <div>
+          <h4 className="font-medium text-claude-900">Profile Picture</h4>
+          <p className="text-sm text-claude-600">Upload a profile picture</p>
+          <button
+            type="button"
+            className="mt-2 px-3 py-1 text-sm bg-claude-600 text-white rounded-lg hover:bg-claude-700 transition-colors"
+          >
+            Upload Image
+          </button>
+        </div>
+      </div>
+
+      {/* Basic Information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-claude-700 mb-2">
+            Full Name
+          </label>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => handleChange('name', e.target.value)}
+            className="w-full px-3 py-2 border border-claude-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent"
+            placeholder="Enter your full name"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-claude-700 mb-2">
+            Email Address
+          </label>
+          <div className="relative">
+            <EnvelopeIcon className="absolute left-3 top-2.5 h-5 w-5 text-claude-400" />
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleChange('email', e.target.value)}
+              className="w-full pl-10 pr-3 py-2 border border-claude-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent"
+              placeholder="Enter your email"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-claude-700 mb-2">
+            Phone Number
+          </label>
+          <div className="relative">
+            <PhoneIcon className="absolute left-3 top-2.5 h-5 w-5 text-claude-400" />
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => handleChange('phone', e.target.value)}
+              className="w-full pl-10 pr-3 py-2 border border-claude-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent"
+              placeholder="Enter your phone number"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-claude-700 mb-2">
+            Location
+          </label>
+          <div className="relative">
+            <MapPinIcon className="absolute left-3 top-2.5 h-5 w-5 text-claude-400" />
+            <input
+              type="text"
+              value={formData.location}
+              onChange={(e) => handleChange('location', e.target.value)}
+              className="w-full pl-10 pr-3 py-2 border border-claude-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent"
+              placeholder="Enter your location"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Bio */}
+      <div>
+        <label className="block text-sm font-medium text-claude-700 mb-2">
+          Bio
+        </label>
+        <textarea
+          value={formData.bio}
+          onChange={(e) => handleChange('bio', e.target.value)}
+          rows="3"
+          className="w-full px-3 py-2 border border-claude-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent resize-none"
+          placeholder="Tell us about yourself..."
+        />
+      </div>
+
+      {/* Join Date (Read-only) */}
+      <div>
+        <label className="block text-sm font-medium text-claude-700 mb-2">
+          Member Since
+        </label>
+        <div className="relative">
+          <CalendarIcon className="absolute left-3 top-2.5 h-5 w-5 text-claude-400" />
+          <input
+            type="text"
+            value={new Date(formData.joinDate).toLocaleDateString()}
+            className="w-full pl-10 pr-3 py-2 border border-claude-300 rounded-lg bg-claude-50 text-claude-600"
+            readOnly
+          />
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex space-x-3 pt-4">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="flex-1 px-4 py-2 border border-claude-300 text-claude-700 rounded-lg hover:bg-claude-50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="flex-1 px-4 py-2 bg-claude-600 text-white rounded-lg hover:bg-claude-700 transition-colors"
+        >
+          Save Changes
+        </button>
+      </div>
+    </form>
+  );
+}
 
 function App() {
   const [input, setInput] = useState("");
@@ -17,6 +176,16 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [conversationToDelete, setConversationToDelete] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [userProfile, setUserProfile] = useState({
+    name: "John Doe",
+    email: "john.doe@example.com",
+    phone: "+1 (555) 123-4567",
+    location: "San Francisco, CA",
+    bio: "Software developer passionate about AI and technology.",
+    joinDate: "2024-01-15",
+    avatar: null
+  });
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -149,6 +318,19 @@ function App() {
   const cancelDelete = () => {
     setShowDeleteModal(false);
     setConversationToDelete(null);
+  };
+
+  const openProfileModal = () => {
+    setShowProfileModal(true);
+  };
+
+  const closeProfileModal = () => {
+    setShowProfileModal(false);
+  };
+
+  const updateProfile = (updatedProfile) => {
+    setUserProfile(updatedProfile);
+    setShowProfileModal(false);
   };
 
   const sendMessage = async () => {
@@ -294,6 +476,38 @@ function App() {
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-claude-900"></div>
               </div>
             </button>
+          </div>
+
+          {/* Profile Section */}
+          <div className="p-4 border-b border-claude-200 bg-claude-50">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-claude-600 rounded-full flex items-center justify-center">
+                {userProfile.avatar ? (
+                  <img 
+                    src={userProfile.avatar} 
+                    alt={userProfile.name}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <UserIcon className="h-6 w-6 text-white" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-claude-900 text-sm truncate">
+                  {userProfile.name}
+                </h3>
+                <p className="text-claude-600 text-xs truncate">
+                  {userProfile.email}
+                </p>
+              </div>
+              <button
+                onClick={openProfileModal}
+                className="p-1.5 text-claude-600 hover:text-claude-900 hover:bg-claude-100 rounded-lg transition-colors"
+                title="Edit Profile"
+              >
+                <Cog6ToothIcon className="h-4 w-4" />
+              </button>
+            </div>
           </div>
 
           {/* Conversations List */}
@@ -514,6 +728,33 @@ function App() {
                 Yes, Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-claude-900">
+                Edit Profile
+              </h3>
+              <button
+                onClick={closeProfileModal}
+                className="p-2 text-claude-400 hover:text-claude-600 hover:bg-claude-100 rounded-lg transition-colors"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <ProfileForm 
+              profile={userProfile} 
+              onSave={updateProfile} 
+              onCancel={closeProfileModal} 
+            />
           </div>
         </div>
       )}
